@@ -40,6 +40,9 @@ function calculateVariance(points) {
   if (points.length < 2) return 1;
   const dx = points[points.length - 1].x - points[0].x;
   const dy = points[points.length - 1].y - points[0].y;
+  const dx = points[points.length - 1].x - points[0].x;
+const dy = points[points.length - 1].y - points[0].y;
+if (dx === 0) return 1;
   let totalVariance = 0;
   for (let i = 1; i < points.length - 1; i++) {
     const expectedY = points[0].y + (dy * (points[i].x - points[0].x) / dx);

@@ -19,8 +19,12 @@ async function sendSignal(type, data = {}) {
   try {
     const res = await fetch('/api/signal', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ type, data })
+    headers: { 
+  'Content-Type': 'application/json',
+  'X-Session-ID': botSessionId // Passes the session ID to your server
+},
+body: JSON.stringify({ type, data })
+    
     });
     const result = await res.json();
     if (result.ok) {
