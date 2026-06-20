@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IRCTC Tatkal Booking — RailGuard</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="navbar-inner container">
+      <div class="navbar-logo">
+        <span>🚂</span> IRCTC Tatkal
+      </div>
+      <div class="navbar-links">
+        <a href="/index.html" class="active">Home</a>
+        <a href="/trains.html">Book Train</a>
+        <a href="/admin.html">Admin</a>
+      </div>
+      <div class="navbar-actions">
+        <span id="bot-status" class="badge badge-human">✓ Human</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="container mt-24">
+    <!-- Progress Stepper -->
+    <div class="stepper">
+      <div class="step active">
+        <div class="step-circle">1</div>
+        <div class="step-label">Home</div>
+      </div>
+      <div class="step-line"></div>
+      <div class="step">
+        <div class="step-circle">2</div>
+        <div class="step-label">Train</div>
+      </div>
+      <div class="step-line"></div>
+      <div class="step">
+        <div class="step-circle">3</div>
+        <div class="step-label">Passengers</div>
+      </div>
+      <div class="step-line"></div>
+      <div class="step">
+        <div class="step-circle">4</div>
+        <div class="step-label">Payment</div>
+      </div>
+      <div class="step-line"></div>
+      <div class="step">
+        <div class="step-circle">5</div>
+        <div class="step-label">Confirm</div>
+      </div>
+    </div>
+
+    <!-- Hero Section -->
+    <div class="card mb-24">
+      <div class="card-body">
+        <h1 class="section-title">🚂 Book Tatkal Railway Tickets Instantly</h1>
+        <p class="section-sub">Secure booking with AI-powered bot detection to ensure fair access for all passengers.</p>
+        
+        <div class="alert alert-info mb-16">
+          <strong>ℹ️ Tatkal Booking Opens:</strong> 10:00 AM for AC Classes, 11:00 AM for Non-AC Classes
+        </div>
+
+        <div class="flex gap-12 items-center">
+          <a href="/trains.html" class="btn btn-orange">Book Tatkal Ticket →</a>
+          <a href="/trains.html" class="btn btn-outline">Check Train Availability</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Features -->
+    <div class="flex gap-16 flex-col-md">
+      <div class="card">
+        <div class="card-body">
+          <h3 class="font-bold mb-8">🛡️ AI Bot Detection</h3>
+          <p class="text-sm text-muted">RailGuard detects and blocks automated bots using behavioral analysis, honeypots, and machine learning.</p>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="card-body">
+          <h3 class="font-bold mb-8">⚡ Instant Booking</h3>
+          <p class="text-sm text-muted">Book Tatkal tickets in seconds with our optimized booking flow and real-time availability.</p>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="card-body">
+          <h3 class="font-bold mb-8">✅ Secure Payment</h3>
+          <p class="text-sm text-muted">Payment gateway integration with UPI, credit/debit cards, and net banking support.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Search -->
+    <div class="card mt-24">
+      <div class="card-body">
+        <h2 class="section-title mb-16">🔍 Quick Train Search</h2>
+        
+        <form action="/trains.html" method="get" class="flex gap-12 flex-col">
+          <div class="flex gap-8 flex-col">
+            <div class="form-group">
+              <label class="form-label">From</label>
+              <input type="text" class="form-input" name="from" placeholder="Station code (e.g., NDLS)" required>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">To</label>
+              <input type="text" class="form-input" name="to" placeholder="Station code (e.g., CSTM)" required>
+            </div>
+          </div>
+          
+          <div class="flex gap-8 flex-col">
+            <div class="form-group">
+              <label class="form-label">Date</label>
+              <input type="date" class="form-input" name="date" required>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Class</label>
+              <select class="form-select" name="class">
+                <option value="all">All Classes</option>
+                <option value="SL">Sleeper (SL)</option>
+                <option value="3A">3 AC (3A)</option>
+                <option value="2A">2 AC (2A)</option>
+                <option value="1A">1 AC (1A)</option>
+              </select>
+            </div>
+          </div>
+          
+          <button type="submit" class="btn btn-primary" style="align-self: flex-end;">Search Trains</button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h4>About IRCTC</h4>
+          <a href="#">Official Website</a>
+          <a href="#">Tatkal Rules</a>
+          <a href="#">Cancellation Policy</a>
+        </div>
+        
+        <div class="footer-col">
+          <h4>Support</h4>
+          <a href="#">Help Center</a>
+          <a href="#">Contact Us</a>
+          <a href="#">FAQs</a>
+        </div>
+        
+        <div class="footer-col">
+          <h4>Payment</h4>
+          <a href="#">UPI</a>
+          <a href="#">Credit Card</a>
+          <a href="#">Debit Card</a>
+        </div>
+        
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <a href="#">Terms of Use</a>
+          <a href="#">Privacy Policy</a>
+          <a href="#">Disclaimer</a>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>© 2026 RailGuard IRCTC — AI-Powered Bot Detection</p>
+        <p>Made with ❤️ for fair ticket booking</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/main.js"></script>
+  <script src="js/bot-detector.js"></script>
+</body>
+</html>

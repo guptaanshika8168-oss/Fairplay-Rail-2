@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Ticket Confirmed — IRCTC</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="navbar-inner container">
+      <div class="navbar-logo"><span>🚂</span> IRCTC Tatkal</div>
+      <div class="navbar-links">
+        <a href="/index.html" class="active">Home</a>
+        <a href="/trains.html">Book Train</a>
+        <a href="/admin.html">Admin</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container mt-24">
+    <div class="alert alert-success mb-24">
+      <span style="font-size: 24px;">✓</span>
+      <div><strong>Ticket Confirmed!</strong><p class="text-sm">PNR: <span id="pnr" class="font-mono"></span></p></div>
+    </div>
+
+    <div id="ticket-card" class="card mb-24"><div class="card-body"></div></div>
+
+    <div class="flex gap-12">
+      <button onclick="window.print()" class="btn btn-primary">📄 Download Ticket</button>
+      <a href="/index.html" class="btn btn-orange">Book Another →</a>
+    </div>
+  </main>
+
+  <script src="js/main.js"></script>
+  <script src="js/bot-detector.js"></script>
+  <script>
+    sendSignal('page', { page: '/confirmation.html' });
+    document.getElementById('pnr').textContent = '1234567890';
+  </script>
+</body>
+</html>

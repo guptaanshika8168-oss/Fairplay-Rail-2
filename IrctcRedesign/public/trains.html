@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Select Train — IRCTC Tatkal</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="navbar-inner container">
+      <div class="navbar-logo">
+        <span>🚂</span> IRCTC Tatkal
+      </div>
+      <div class="navbar-links">
+        <a href="/index.html">Home</a>
+        <a href="/trains.html" class="active">Book Train</a>
+        <a href="/admin.html">Admin</a>
+      </div>
+      <div class="navbar-actions">
+        <span id="bot-status" class="badge badge-human">✓ Human</span>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container mt-24">
+    <div class="stepper">
+      <div class="step done">
+        <div class="step-circle">1</div>
+        <div class="step-label">Home</div>
+      </div>
+      <div class="step-line"></div>
+      <div class="step active">
+        <div class="step-circle">2</div>
+        <div class="step-label">Train</div>
+      </div>
+      <div class="step-line"></div>
+      <div class="step">
+        <div class="step-circle">3</div>
+        <div class="step-label">Passengers</div>
+      </div>
+      <div class="step-line"></div>
+      <div class="step">
+        <div class="step-circle">4</div>
+        <div class="step-label">Payment</div>
+      </div>
+      <div class="step-line"></div>
+      <div class="step">
+        <div class="step-circle">5</div>
+        <div class="step-label">Confirm</div>
+      </div>
+    </div>
+
+    <h1 class="section-title mb-8">🔍 Available Tatkal Trains</h1>
+    <p class="section-sub">Select a train with available Tatkal seats</p>
+
+    <div class="card mb-16">
+      <div class="card-body">
+        <div class="flex gap-12 flex-col">
+          <div class="form-group">
+            <label class="form-label">From</label>
+            <input type="text" id="filter-from" class="form-input" placeholder="NDLS">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">To</label>
+            <input type="text" id="filter-to" class="form-input" placeholder="CSTM">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Class</label>
+            <select id="filter-class" class="form-select">
+              <option value="all">All Classes</option>
+              <option value="SL">Sleeper</option>
+              <option value="3A">3 AC</option>
+              <option value="2A">2 AC</option>
+              <option value="1A">1 AC</option>
+            </select>
+          </div>
+          
+          <button id="filter-btn" class="btn btn-primary">Filter</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="train-list" class="flex gap-12 flex-col">
+      <!-- Trains will be loaded here -->
+    </div>
+  </main>
+
+  <script>
+    // Mock train data
+    const trains = [
+      {
+        id: '12951',
+        name: 'Mumbai Rajdhani',
+        from: 'NDLS',
+        to: 'CSTM',
+        departs: '16:55',
+        arrives: '10:35',
+        durationHrs: 17,
+        durationMins: 40,
+        days: 'Daily',
+        avl: { SL: 42, '3A': 0, '2A': 'RAC 3', '1A': 5 },
+        fare: { SL: 945, '3A': 2455, '2A': 3520, '1A': 5880 }
+      },
+      {
+        id: '12615',
+        name: 'Grand Trunk Express',
+        from: 'NDLS',
+        to: 'CSTM',
+        departs: '06:30',
+        arrives: '00:10',
+        durationHrs: 17,
+        durationMins: 40,
+        days: 'Daily',
+        avl: { SL: 12, '3A': 7, '2A': 2, '1A': 0 },
+        fare: { SL: 780, '3A': 2100, '2A': 3100, '1A': 5200 }
+      },
+      {
+        id: '22109',
+        name: 'Lokmanya Tilak Express',
+        from: 'NDLS',
+        to: 'LTT',
+        departs: '23:00',
+        arrives: '22:00',
+        durationHrs: 23,
+        durationMins: 0,
+        days: 'Mon, Wed, Fri',
+        avl: { SL: 0, '3A': 15, '2A': 8, '1A': 0 },
+        fare: { SL: 870, '3A': 2300, '2A': 3400, '1A': 5600 }
+      },
+      {
+        id: '12137',
+        name: 'Punjab Mail',
+        from: 'NDLS',
+        to: 'CSTM',
+        departs: '20:10',
+        arrives: '19:45',
+        durationHrs: 23,
+        durationMins: 35,
+        days: 'Daily',
+        avl: { SL: 78, '3A': 24, '2A': 10, '1A': 3 },
+        fare: { SL: 735, '3A': 1980, '2A': 2900, '1A': 4800 }
+      },
+      {
+        id: '12263',
+        name: 'Pune Duronto Express',
+        from: 'NDLS',
+        to: 'PUNE',
+        departs: '22:30',
+        arrives: '14:05',
+        durationHrs: 15,
+        durationMins: 35,
+        days: 'Mon, Thu, Sat',
+        avl: { SL: 0, '3A': 3, '2A': 1, '1A': 0 },
+        fare: { SL: 1100, '3A': 2800, '2A': 4100, '1A': 6800 }
+      }
+    ];
+
+    // Load trains
+    function loadTrains() {
+      const trainList = document.getElementById('train-list');
+      trainList.innerHTML = '';
+      
+      trains.forEach(train => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        
+        // Create availability chips
+        let avlChips = '';
+        for (const [classType, avail] of Object.entries(train.avl)) {
+          const colorClass = avail === 0 ? 'text-red' : (typeof avail === 'string' && avail.includes('RAC')) ? 'text-blue' : 'text-green';
+          const display = avail === 0 ? 'WL' : avail;
+          avlChips += `
+            <div class="flex-col" style="min-width: 80px;">
+              <p class="text-xs text-muted">${classType}</p>
+              <p class="font-semibold ${colorClass}">${display}</p>
+            </div>
+          `;
+        }
+        
+        // Create fare list
+        let fareList = '';
+        for (const [classType, fare] of Object.entries(train.fare)) {
+          fareList += `
+            <div class="flex gap-8 mb-4">
+              <span class="text-sm">${classType}</span>
+              <span class="font-semibold">₹${fare}</span>
+            </div>
+          `;
+        }
+        
+        card.innerHTML = `
+          <div class="card-body">
+            <div class="flex justify-between items-center mb-8">
+              <h3 class="font-bold">${train.name}</h3>
+              <span class="chip chip-avl">#${train.id}</span>
+            </div>
+            
+            <div class="flex justify-between items-center mb-16">
+              <div>
+                <p class="text-sm text-muted">${train.from}</p>
+                <p class="font-bold">${train.departs}</p>
+              </div>
+              
+              <div class="flex-col items-center">
+                <p class="text-xs text-muted">${train.durationHrs}h ${train.durationMins}m</p>
+                <div style="width: 100px; height: 2px; background: var(--border); margin: 4px 0;"></div>
+                <p class="text-xs text-muted">${train.days}</p>
+              </div>
+              
+              <div>
+                <p class="text-sm text-muted">${train.to}</p>
+                <p class="font-bold">${train.arrives}</p>
+              </div>
+            </div>
+            
+            <div class="flex gap-8 mb-16">
+              ${avlChips}
+            </div>
+            
+            <div class="flex gap-8 justify-between">
+              <div>${fareList}</div>
+              <button onclick="selectTrain('${train.id}', '${train.name}', '${train.from}', '${train.to}')" class="btn btn-orange">Book Now →</button>
+            </div>
+          </div>
+        `;
+        
+        trainList.appendChild(card);
+      });
+    }
+
+    // Select train
+    function selectTrain(id, name, from, to) {
+      const selectedTrain = {
+        id: id,
+        name: name,
+        from: from,
+        to: to,
+        date: new Date().toLocaleDateString('en-IN')
+      };
+      sessionStorage.setItem('selectedTrain', JSON.stringify(selectedTrain));
+      window.location.href = 'passengers.html';
+    }
+
+    // Filter button
+    document.getElementById('filter-btn').addEventListener('click', function() {
+      loadTrains();
+    });
+
+    // Load trains on page load
+    loadTrains();
+  </script>
+</body>
+</html>
