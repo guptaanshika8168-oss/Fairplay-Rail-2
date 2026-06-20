@@ -36,7 +36,6 @@
 
     <div id="booking-summary" class="card mb-16">
       <div class="card-body">
-        <!-- Booking data loaded here -->
         <p class="text-muted">Loading booking details...</p>
       </div>
     </div>
@@ -89,88 +88,56 @@
       sendSignal('page', { page: '/payment.html' });
     }
 
-    // Load booking data
-    async function loadBookingData() {
-      try {
-        const res = await fetch('/api/booking');
-        const booking = await res.json();
-        
-        if (!booking || booking.error) {
-          alert('No booking found. Please go back and book again.');
-          window.location.href = 'trains.html';
-          return;
-        }
+    // Load booking data from sessionStorage
+    const booking = JSON.parse(sessionStorage.getItem('booking') || '{}');
 
-        // Display booking summary
-        document.getElementById('booking-summary').innerHTML = `
-          <div class="flex gap-16 flex-col">
-            <div class="flex justify-between items-center mb-8" style="background: var(--blue-light); padding: 20px; border-radius: var(--radius-sm);">
-              <div>
-                <h2 class="font-bold font-lg">${booking.trainName}</h2>
-                <p class="text-sm text-muted">${booking.from} → ${booking.to}</p>
-                <p class="text-sm text-muted">${booking.date}</p>
-              </div>
-              <div class="text-right">
-                <p class="text-sm text-muted">PNR</p>
-                <p class="font-mono font-bold">${booking.pnr || 'Pending'}</p>
-              </div>
-            </div>
-
-            <div class="mb-8">
-              <h4 class="font-semibold mb-8">Passengers</h4>
-              ${booking.passengers.map(p => `
-                <div class="flex gap-8 mb-4" style="padding: 12px; background: var(--bg); border-radius: var(--radius-xs);">
-                  <span class="font-semibold">${p.name}</span>
-                  <span class="text-muted">${p.age}y, ${p.gender}</span>
-                  <span class="text-muted">${p.coach} - ${p.berth}</span>
-                  <span class="chip chip-avl">${p.status}</span>
-                </div>
-              `).join('')}
-            </div>
-
-            <div class="divider"></div>
-
-            <h4 class="font-semibold mb-8">Fare Summary</h4>
-            <div class="flex gap-8 flex-col">
-              <div class="flex justify-between">
-                <span>Base Fare</span>
-                <span>₹${booking.fare.base}</span>
-              </div>
-              <div class="flex justify-between">
-                <span>Reservation</span>
-                <span>₹${booking.fare.reservation}</span>
-              </div>
-              <div class="flex justify-between">
-                <span>GST (5%)</span>
-                <span>₹${booking.fare.gst}</span>
-              </div>
-              <div class="flex justify-between font-bold font-lg" style="border-top: 2px solid var(--border); padding-top: 12px;">
-                <span>Total</span>
-                <span>₹${booking.fare.total}</span>
-              </div>
-            </div>
-          </div>
-        `;
-
-        // Set total fare
-        document.getElementById('total-fare').textContent = booking.fare.total;
-      } catch (err) {
-        console.error('Failed to load booking:', err);
-        alert('Error loading booking details.');
-      }
+    if (!booking.trainId) {
+      alert('No booking found! Please go back and book again.');
+      window.location.href = 'trains.html';
     }
 
-    // Handle payment
+    // Display booking summary
+    document.getElementById('booking-summary').innerHTML = `
+      <div class="flex gap-16 flex-col">
+        <div class="flex justify-between items-center mb-8" style="background: var(--blue-light); padding: 20px; border-radius: var(--radius-sm);">
+          <div>
+            <h2 class="font-bold font-lg">${booking.trainName}</h2>
+            <p class="text-sm text-muted">${booking.from} → ${booking.to}</p>
+            <p class="text-sm text-muted">${booking.date}</p>
+          </div>
+          <div class="text-right">
+            <p class="text-sm text-muted">PNR</p>
+            <p class="font-mono font-bold">${booking.pnr || 'Pending'}</p>
+          </div>
+        </div>
+
+        <div class="mb-8">
+          <h4 class="font-semibold mb-8">Passengers</h4>
+          ${booking.passengers.map(p => `
+            <div class="flex gap-8 mb-4" style="padding: 12px; background: var(--bg); border-radius: var(--radius-xs);">
+              <span class="font-semibold">${p.name}</span>
+              <span class="text-muted">${p.age}y, ${p.gender}</span>
+              <span class="text-muted">${p.coach} - ${p.berth}</span>
+              <span class="chip chip-avl">${p.status}</span>
+            </div>
+          `).join('')}
+        </div>
+
+        <div class="flex justify-between font-bold font-lg" style="border-top: 2px solid var(--border); padding-top: 12px;">
+          <span>Total</span>
+          <span>₹${booking.fare.total}</span>
+        </div>
+      </div>
+    `;
+
+    // Set total fare
+    document.getElementById('total-fare').textContent = booking.fare.total;
+
+    // Handle payment click
     document.getElementById('pay-btn').addEventListener('click', function() {
-      // For demo: just redirect to confirmation
-      // In real app, you would integrate payment gateway here
-      
-      alert('Payment successful! (Demo)');
+      alert('Payment successful! Your ticket is confirmed.');
       window.location.href = 'confirmation.html';
     });
-
-    // Load booking data on page load
-    loadBookingData();
   </script>
 </body>
 </html>
