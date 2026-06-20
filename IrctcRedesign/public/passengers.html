@@ -102,72 +102,71 @@
     if (!selectedTrain.id) {
       alert('No train selected!');
       window.location.href = 'trains.html';
-      return;
-    }
-
-    // Display train
-    document.getElementById('train-info').innerHTML = `
-      <div class="card-body">
-        <div class="flex justify-between items-center">
-          <div>
-            <h3 class="font-bold">${selectedTrain.name}</h3>
-            <p class="text-sm text-muted">${selectedTrain.from} → ${selectedTrain.to}</p>
-            <p class="text-sm text-muted">Date: ${selectedTrain.date}</p>
+    } else {
+      // Safely load layout if train data exists
+      document.getElementById('train-info').innerHTML = `
+        <div class="card-body">
+          <div class="flex justify-between items-center">
+            <div>
+              <h3 class="font-bold">${selectedTrain.name}</h3>
+              <p class="text-sm text-muted">${selectedTrain.from} → ${selectedTrain.to}</p>
+              <p class="text-sm text-muted">Date: ${selectedTrain.date}</p>
+            </div>
           </div>
         </div>
-      </div>
-    `;
+      `;
 
-    // Continue button click
-    document.getElementById('continue-btn').addEventListener('click', async function() {
-      // Validate
-      const name = document.getElementById('p1-name').value;
-      const age = document.getElementById('p1-age').value;
-      const gender = document.getElementById('p1-gender').value;
-      const mobile = document.getElementById('mobile').value;
-      const email = document.getElementById('email').value;
+      // Continue button click
+      document.getElementById('continue-btn').addEventListener('click', async function() {
+        // Validate inputs
+        const name = document.getElementById('p1-name').value;
+        const age = document.getElementById('p1-age').value;
+        const gender = document.getElementById('p1-gender').value;
+        const mobile = document.getElementById('mobile').value;
+        const email = document.getElementById('email').value;
 
-      if (!name || !age || !gender || !mobile) {
-        alert('Please fill all required fields');
-        return;
-      }
-
-      // Create booking data
-      const bookingData = {
-        trainId: selectedTrain.id,
-        trainName: selectedTrain.name,
-        from: selectedTrain.from,
-        to: selectedTrain.to,
-        date: selectedTrain.date,
-        travelClass: 'SL',
-        passengers: [{
-          name: name,
-          age: age,
-          gender: gender,
-          berthPref: 'No pref',
-          coach: 'B1',
-          berth: 1,
-          berthType: 'LB',
-          status: 'CNF'
-        }],
-        contactMobile: mobile,
-        contactEmail: email,
-        insurance: false,
-        fare: {
-          base: 735,
-          reservation: 40,
-          gst: 39,
-          total: 814
+        if (!name || !age || !gender || !mobile) {
+          alert('Please fill all required fields');
+          return;
         }
-      };
 
-      // Save to sessionStorage (for payment page)
-      sessionStorage.setItem('booking', JSON.stringify(bookingData));
+        // Create booking data object
+        const bookingData = {
+          trainId: selectedTrain.id,
+          trainName: selectedTrain.name,
+          from: selectedTrain.from,
+          to: selectedTrain.to,
+          date: selectedTrain.date,
+          travelClass: 'SL',
+          passengers: [{
+            name: name,
+            age: age,
+            gender: gender,
+            berthPref: 'No pref',
+            coach: 'B1',
+            berth: 1,
+            berthType: 'LB',
+            status: 'CNF'
+          }],
+          contactMobile: mobile,
+          contactEmail: email,
+          insurance: false,
+          fare: {
+            base: 735,
+            reservation: 40,
+            gst: 39,
+            total: 814
+          }
+        };
 
-      // Redirect to payment
-      console.log('Redirecting to payment...');
-      window.location.href = 'payment.html';
-    });
+        // Save to sessionStorage (for payment page)
+        sessionStorage.setItem('booking', JSON.stringify(bookingData));
+
+        // Redirect to payment
+        console.log('Redirecting to payment...');
+        window.location.href = 'payment.html';
+      });
+    }
   </script>
 </body>
 </html>
