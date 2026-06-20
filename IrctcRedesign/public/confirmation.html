@@ -2,40 +2,153 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Ticket Confirmed — IRCTC</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ticket Confirmation — IRCTC Tatkal</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
   <nav class="navbar">
     <div class="navbar-inner container">
-      <div class="navbar-logo"><span>🚂</span> IRCTC Tatkal</div>
+      <div class="navbar-logo">
+        <span>🚂</span> IRCTC Tatkal
+      </div>
       <div class="navbar-links">
-        <a href="/index.html" class="active">Home</a>
-        <a href="/trains.html">Book Train</a>
-        <a href="/admin.html">Admin</a>
+        <a href="index.html">Home</a>
+        <a href="trains.html">Book Train</a>
+        <a href="admin.html">Admin</a>
+      </div>
+      <div class="navbar-actions">
+        <span id="bot-status" class="badge badge-human">✓ Human</span>
       </div>
     </div>
   </nav>
 
-  <main class="container mt-24">
-    <div class="alert alert-success mb-24">
-      <span style="font-size: 24px;">✓</span>
-      <div><strong>Ticket Confirmed!</strong><p class="text-sm">PNR: <span id="pnr" class="font-mono"></span></p></div>
+  <main class="container confirmation-page">
+    <div class="confirm-top">
+      <div class="confirm-title-wrap">
+        <p class="confirm-success">✓ Booking confirmed!</p>
+        <h1 class="confirm-title">Your e-Ticket is ready</h1>
+        <p class="confirm-subtitle">Please save or print this reservation slip for your journey.</p>
+      </div>
+
+      <div class="confirm-actions">
+        <button class="btn btn-ghost" onclick="window.print()">Print Reservation Slip</button>
+        <button class="btn btn-primary" onclick="downloadTicket()">Download PDF</button>
+      </div>
     </div>
 
-    <div id="ticket-card" class="card mb-24"><div class="card-body"></div></div>
+    <section class="ticket-card" id="ticket-card">
+      <div class="ticket-header">
+        <div class="ticket-railway">
+          <span class="ticket-icon">🚆</span>
+          <span>Indian Railways</span>
+        </div>
+        <div class="ticket-meta">
+          <span id="ticket-class">e-Ticket | Class: SL</span>
+        </div>
+      </div>
 
-    <div class="flex gap-12">
-      <button onclick="window.print()" class="btn btn-primary">📄 Download Ticket</button>
-      <a href="/index.html" class="btn btn-orange">Book Another →</a>
-    </div>
+      <div class="ticket-body">
+        <div class="journey-row">
+          <div class="station-block left">
+            <p class="station-code" id="from-code">NDLS</p>
+            <p class="station-name" id="from-name">New Delhi</p>
+            <p class="station-time" id="from-time">16:55</p>
+          </div>
+
+          <div class="journey-mid">
+            <p class="journey-duration" id="journey-duration">17h 40m</p>
+            <div class="journey-line"></div>
+            <p class="train-number" id="train-number">12951 Rajdhani</p>
+          </div>
+
+          <div class="station-block right">
+            <p class="station-code" id="to-code">CSMT</p>
+            <p class="station-name" id="to-name">Mumbai CSMT</p>
+            <p class="station-time" id="to-time">10:35 +1</p>
+          </div>
+        </div>
+
+        <div class="divider-line"></div>
+
+        <div class="passenger-section">
+          <div class="section-heading">Passenger Details</div>
+          <div class="passenger-table">
+            <div class="passenger-head">
+              <span>Name</span>
+              <span>Age</span>
+              <span>Coach</span>
+              <span>Berth</span>
+              <span>Status</span>
+            </div>
+            <div id="passenger-list"></div>
+          </div>
+        </div>
+
+        <div class="ticket-footer">
+          <div class="pnr-box">
+            <p class="pnr-label">PNR Number</p>
+            <p class="pnr-value" id="pnr-number">4821039467</p>
+          </div>
+
+          <div class="fare-box">
+            <p class="fare-label">Total Fare</p>
+            <p class="fare-value" id="fare-total">₹0</p>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
 
   <script src="js/main.js"></script>
-  <script src="js/bot-detector.js"></script>
   <script>
-    sendSignal('page', { page: '/confirmation.html' });
-    document.getElementById('pnr').textContent = '1234567890';
+    async function loadBooking() {
+      try {
+        const res = await fetch('/api/booking');
+        const booking = await res.json();
+
+        if (!booking || booking.error) {
+          window.location.href = 'trains.html';
+          return;
+        }
+
+        document.getElementById('ticket-class').textContent = `e-Ticket | Class: ${booking.travelClass || 'SL'}`;
+        document.getElementById('from-code').textContent = booking.from || 'NDLS';
+        document.getElementById('from-name').textContent = booking.fromName || 'New Delhi';
+        document.getElementById('from-time').textContent = booking.departs || '16:55';
+
+        document.getElementById('to-code').textContent = booking.to || 'CSMT';
+        document.getElementById('to-name').textContent = booking.toName || 'Mumbai CSMT';
+        document.getElementById('to-time').textContent = booking.arrives || '10:35 +1';
+
+        document.getElementById('journey-duration').textContent = booking.duration || '17h 40m';
+        document.getElementById('train-number').textContent = `${booking.trainId || '12951'} ${booking.trainName || 'Rajdhani'}`;
+
+        document.getElementById('pnr-number').textContent = booking.pnr || '4821039467';
+        document.getElementById('fare-total').textContent = `₹${booking.fare?.total || 0}`;
+
+        const passengers = booking.passengers || [];
+        const list = document.getElementById('passenger-list');
+
+        list.innerHTML = passengers.map(p => `
+          <div class="passenger-row">
+            <span>${p.name}</span>
+            <span>${p.age}</span>
+            <span>${p.coach}</span>
+            <span>${p.berth}</span>
+            <span><span class="status-pill">${p.status || 'CNF'}</span></span>
+          </div>
+        `).join('');
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    function downloadTicket() {
+      window.print();
+    }
+
+    loadBooking();
   </script>
 </body>
 </html>
