@@ -38,11 +38,14 @@ function trackMouseMovement() {
 
 function calculateVariance(points) {
   if (points.length < 2) return 1;
-  const dx = points[points.length - 1].x - points[0].x;
-  const dy = points[points.length - 1].y - points[0].y;
+  
+  // Renamed variables to deltaX and deltaY to completely fix the duplicate declaration crash
+  const deltaX = points[points.length - 1].x - points[0].x;
+  const deltaY = points[points.length - 1].y - points[0].y;
   let totalVariance = 0;
+  
   for (let i = 1; i < points.length - 1; i++) {
-    const expectedY = points[0].y + (dy * (points[i].x - points[0].x) / dx);
+    const expectedY = points[0].y + (deltaY * (points[i].x - points[0].x) / deltaX);
     totalVariance += Math.abs(points[i].y - expectedY);
   }
   return totalVariance / (points.length - 2);
