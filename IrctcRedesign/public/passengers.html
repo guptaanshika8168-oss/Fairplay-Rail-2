@@ -11,9 +11,9 @@
     <div class="navbar-inner container">
       <div class="navbar-logo"><span>🚂</span> IRCTC Tatkal</div>
       <div class="navbar-links">
-        <a href="/index.html">Home</a>
-        <a href="/trains.html">Book Train</a>
-        <a href="/admin.html">Admin</a>
+        <a href="index.html">Home</a>
+        <a href="trains.html">Book Train</a>
+        <a href="admin.html">Admin</a>
       </div>
       <div class="navbar-actions">
         <span id="bot-status" class="badge badge-human">✓ Human</span>
@@ -34,49 +34,35 @@
       <div class="step"><div class="step-circle">5</div><div class="step-label">Confirm</div></div>
     </div>
 
-    <h1 class="section-title mb-8"> Passenger Details</h1>
-    <p class="section-sub">Enter passenger information for Tatkal booking</p>
+    <h1 class="section-title mb-8">👥 Passenger Details</h1>
+    <p class="section-sub">Enter passenger information</p>
 
-    <div id="train-info" class="card mb-16"><div class="card-body"></div></div>
+    <div id="train-info" class="card mb-16"></div>
 
     <div class="card mb-16">
       <div class="card-body">
-        <h3 class="font-bold mb-16">Add Passenger(s)</h3>
-        <div id="passenger-forms" class="flex gap-16 flex-col">
-          <div class="passenger-form" data-index="0">
-            <div class="flex gap-8 flex-col">
-              <div class="form-group">
-                <label class="form-label">Name *</label>
-                <input type="text" name="passengerName" class="form-input" required placeholder="Full name">
-              </div>
-              <div class="flex gap-8">
-                <div class="form-group" style="flex: 1;">
-                  <label class="form-label">Age *</label>
-                  <input type="number" name="passengerAge" class="form-input" required placeholder="Age" min="1" max="120">
-                </div>
-                <div class="form-group" style="flex: 1;">
-                  <label class="form-label">Gender *</label>
-                  <select name="passengerGender" class="form-select" required>
-                    <option value="">Select</option>
-                    <option value="M">Male</option>
-                    <option value="F">Female</option>
-                    <option value="O">Other</option>
-                  </select>
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Berth Preference</label>
-                <select name="passengerBerth" class="form-select">
-                  <option value="No pref">No Preference</option>
-                  <option value="LB">Lower Berth</option>
-                  <option value="MB">Middle Berth</option>
-                  <option value="UB">Upper Berth</option>
-                </select>
-              </div>
+        <h3 class="font-bold mb-16">Passenger 1</h3>
+        <div class="flex gap-8 flex-col">
+          <div class="form-group">
+            <label class="form-label">Name *</label>
+            <input type="text" id="p1-name" class="form-input" required placeholder="Full name">
+          </div>
+          <div class="flex gap-8">
+            <div class="form-group" style="flex: 1;">
+              <label class="form-label">Age *</label>
+              <input type="number" id="p1-age" class="form-input" required placeholder="Age" min="1" max="120">
+            </div>
+            <div class="form-group" style="flex: 1;">
+              <label class="form-label">Gender *</label>
+              <select id="p1-gender" class="form-select" required>
+                <option value="">Select</option>
+                <option value="M">Male</option>
+                <option value="F">Female</option>
+                <option value="O">Other</option>
+              </select>
             </div>
           </div>
         </div>
-        <button id="add-passenger" class="btn btn-ghost mt-16">+ Add Another Passenger</button>
       </div>
     </div>
 
@@ -86,56 +72,101 @@
         <div class="flex gap-8 flex-col">
           <div class="form-group">
             <label class="form-label">Mobile Number *</label>
-            <input type="tel" name="contactMobile" class="form-input" required placeholder="9876543210">
+            <input type="tel" id="mobile" class="form-input" required placeholder="9876543210">
           </div>
           <div class="form-group">
-            <label class="form-label">Email Address</label>
-            <input type="email" name="contactEmail" class="form-input" placeholder="example@email.com">
-          </div>
-          <div class="form-group">
-            <label class="form-label"><input type="checkbox" name="insurance" style="margin-right: 8px;">Add Travel Insurance (₹1.00)</label>
+            <label class="form-label">Email</label>
+            <input type="email" id="email" class="form-input" placeholder="example@email.com">
           </div>
         </div>
       </div>
     </div>
 
-    <input type="text" class="hp-field" name="honeypot_field" autocomplete="off">
-
     <div class="flex gap-12 justify-between">
-      <a href="/trains.html" class="btn btn-ghost">← Back</a>
-      <button type="submit" form="booking-form" class="btn btn-orange">Continue to Payment →</button>
+      <a href="trains.html" class="btn btn-ghost">← Back</a>
+      <button id="continue-btn" class="btn btn-orange">Continue to Payment →</button>
     </div>
   </main>
-
-  <div id="captcha-challenge" class="card mt-16" style="display: none;">
-    <div class="card-body">
-      <h3 class="font-bold mb-8">⚠️ Verification Required</h3>
-      <img id="captcha-image" src="" style="border-radius: 8px; margin-bottom: 16px;">
-      <div class="flex gap-8">
-        <button onclick="verifyCaptcha(true)" class="btn btn-primary">✓ I Passed</button>
-        <button onclick="verifyCaptcha(false)" class="btn btn-ghost">✗ Try Again</button>
-      </div>
-    </div>
-  </div>
 
   <script src="js/main.js"></script>
   <script src="js/bot-detector.js"></script>
   <script>
-    sendSignal('page', { page: '/passengers.html' });
+    // Initialize
+    if (typeof initBotSession !== 'undefined') {
+      initBotSession();
+    }
+
+    // Get train
     const selectedTrain = JSON.parse(sessionStorage.getItem('selectedTrain') || '{}');
-    if (!selectedTrain.id) window.location.href = '/trains.html';
+    
+    if (!selectedTrain.id) {
+      alert('No train selected!');
+      window.location.href = 'trains.html';
+      return;
+    }
 
-    document.getElementById('train-info').innerHTML = `<div class="flex justify-between items-center"><div><h3 class="font-bold">${selectedTrain.name}</h3><p class="text-sm text-muted">${selectedTrain.from} → ${selectedTrain.to}</p></div></div>`;
+    // Display train
+    document.getElementById('train-info').innerHTML = `
+      <div class="card-body">
+        <div class="flex justify-between items-center">
+          <div>
+            <h3 class="font-bold">${selectedTrain.name}</h3>
+            <p class="text-sm text-muted">${selectedTrain.from} → ${selectedTrain.to}</p>
+            <p class="text-sm text-muted">Date: ${selectedTrain.date}</p>
+          </div>
+        </div>
+      </div>
+    `;
 
-    let passengerCount = 1;
-    document.getElementById('add-passenger').addEventListener('click', () => {
-      if (passengerCount >= 6) { alert('Max 6 passengers'); return; }
-      passengerCount++;
-      const formContainer = document.getElementById('passenger-forms');
-      const newForm = document.createElement('div');
-      newForm.className = 'passenger-form';
-      newForm.innerHTML = `<div class="flex gap-8 flex-col" style="padding-top: 16px; border-top: 1px solid var(--border);"><div class="form-group"><label class="form-label">Passenger ${passengerCount} Name *</label><input type="text" name="passengerName" class="form-input" required></div><div class="flex gap-8"><div class="form-group" style="flex:1;"><label class="form-label">Age *</label><input type="number" name="passengerAge" class="form-input" required></div><div class="form-group" style="flex:1;"><label class="form-label">Gender *</label><select name="passengerGender" class="form-select" required><option value="">Select</option><option value="M">Male</option><option value="F">Female</option></select></div></div></div>`;
-      formContainer.appendChild(newForm);
+    // Continue button click
+    document.getElementById('continue-btn').addEventListener('click', async function() {
+      // Validate
+      const name = document.getElementById('p1-name').value;
+      const age = document.getElementById('p1-age').value;
+      const gender = document.getElementById('p1-gender').value;
+      const mobile = document.getElementById('mobile').value;
+      const email = document.getElementById('email').value;
+
+      if (!name || !age || !gender || !mobile) {
+        alert('Please fill all required fields');
+        return;
+      }
+
+      // Create booking data
+      const bookingData = {
+        trainId: selectedTrain.id,
+        trainName: selectedTrain.name,
+        from: selectedTrain.from,
+        to: selectedTrain.to,
+        date: selectedTrain.date,
+        travelClass: 'SL',
+        passengers: [{
+          name: name,
+          age: age,
+          gender: gender,
+          berthPref: 'No pref',
+          coach: 'B1',
+          berth: 1,
+          berthType: 'LB',
+          status: 'CNF'
+        }],
+        contactMobile: mobile,
+        contactEmail: email,
+        insurance: false,
+        fare: {
+          base: 735,
+          reservation: 40,
+          gst: 39,
+          total: 814
+        }
+      };
+
+      // Save to sessionStorage (for payment page)
+      sessionStorage.setItem('booking', JSON.stringify(bookingData));
+
+      // Redirect to payment
+      console.log('Redirecting to payment...');
+      window.location.href = 'payment.html';
     });
   </script>
 </body>
