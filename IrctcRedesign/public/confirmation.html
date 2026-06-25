@@ -101,29 +101,35 @@
 
   <script src="js/main.js"></script>
   <script>
-    const booking = JSON.parse(sessionStorage.getItem('booking') || '{}');
-    if (!booking.trainId) window.location.href = 'trains.html';
+    fetch('/api/booking')
+      .then(res => res.json())
+      .then(booking => {
+        if (!booking.trainId) window.location.href = 'trains.html';
 
-    document.getElementById('ticket-class').textContent = `e-Ticket | Class: ${booking.travelClass || 'SL'}`;
-    document.getElementById('from-code').textContent = booking.from || 'NDLS';
-    document.getElementById('from-name').textContent = booking.from === 'NDLS' ? 'New Delhi' : booking.from;
-    document.getElementById('from-time').textContent = booking.departs || '16:55';
-    document.getElementById('to-code').textContent = booking.to || 'CSMT';
-    document.getElementById('to-name').textContent = booking.to === 'CSMT' ? 'Mumbai CSMT' : booking.to;
-    document.getElementById('to-time').textContent = booking.arrives || '10:35 +1';
-    document.getElementById('journey-duration').textContent = `${booking.duration || '17h 40m'}`;
-    document.getElementById('train-number').textContent = `${booking.trainId || ''} ${booking.trainName || ''}`.trim();
-    document.getElementById('pnr-number').textContent = booking.pnr || '4821039467';
-    document.getElementById('fare-total').textContent = `₹${booking.fare?.total || 0}`;
-    document.getElementById('passenger-list').innerHTML = (booking.passengers || []).map(p => `
-      <div class="passenger-row">
-        <span>${p.name}</span>
-        <span>${p.age}</span>
-        <span>${p.coach}</span>
-        <span>${p.berth}</span>
-        <span><span class="status-pill">${p.status || 'CNF'}</span></span>
-      </div>
-    `).join('');
+        document.getElementById('ticket-class').textContent = `e-Ticket | Class: ${booking.travelClass || 'SL'}`;
+        document.getElementById('from-code').textContent = booking.from || 'NDLS';
+        document.getElementById('from-name').textContent = booking.from === 'NDLS' ? 'New Delhi' : booking.from;
+        document.getElementById('from-time').textContent = booking.departs || '16:55';
+        document.getElementById('to-code').textContent = booking.to || 'CSMT';
+        document.getElementById('to-name').textContent = booking.to === 'CSMT' ? 'Mumbai CSMT' : booking.to;
+        document.getElementById('to-time').textContent = booking.arrives || '10:35 +1';
+        document.getElementById('journey-duration').textContent = `${booking.duration || '17h 40m'}`;
+        document.getElementById('train-number').textContent = `${booking.trainId || ''} ${booking.trainName || ''}`.trim();
+        document.getElementById('pnr-number').textContent = booking.pnr || '4821039467';
+        document.getElementById('fare-total').textContent = `₹${booking.fare?.total || 0}`;
+        document.getElementById('passenger-list').innerHTML = (booking.passengers || []).map(p => `
+          <div class="passenger-row">
+            <span>${p.name}</span>
+            <span>${p.age}</span>
+            <span>${p.coach}</span>
+            <span>${p.berth}</span>
+            <span><span class="status-pill">${p.status || 'CNF'}</span></span>
+          </div>
+        `).join('');
+      })
+      .catch(() => {
+        window.location.href = 'trains.html';
+      });
 
     function downloadTicket() {
       window.print();

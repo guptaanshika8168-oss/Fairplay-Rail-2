@@ -5,6 +5,53 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Payment — Fairplay Rail</title>
   <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    .hidden { display: none; }
+    .qr-box {
+      display: grid;
+      place-items: center;
+      gap: 12px;
+      padding: 20px;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 18px;
+      background: rgba(255,255,255,.05);
+      margin-top: 14px;
+    }
+    .payment-methods {
+      display: grid;
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .payment-method {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      padding: 14px 16px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+      cursor: pointer;
+    }
+    .payment-fields {
+      margin-top: 18px;
+      display: grid;
+      gap: 14px;
+    }
+    .field-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .inline-note {
+      color: rgba(238,243,255,.72);
+      font-size: .92rem;
+      line-height: 1.5;
+    }
+    @media (max-width: 720px) {
+      .field-grid { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
   <div class="bg-orb orb-1"></div>
@@ -36,7 +83,7 @@
       <div>
         <div class="eyebrow">Step 4</div>
         <h1>Payment</h1>
-        <p>A clean checkout screen with visible fare summary and a simple confirmation flow.</p>
+        <p>Select a method and complete the required details before your ticket is confirmed.</p>
       </div>
       <div class="page-mini-card">
         <span>Security</span>
@@ -51,34 +98,96 @@
         <h2>Select payment method</h2>
         <span class="section-tag">Demo only</span>
       </div>
-      <div class="pay-methods">
-        <label class="pay-option">
-          <input type="radio" name="payment-method" value="upi" checked>
+
+      <div class="payment-methods">
+        <label class="payment-method">
+          <input type="radio" name="payMethod" value="upi" checked>
           <div>
             <strong>UPI</strong>
-            <span>Google Pay, PhonePe, Paytm</span>
+            <div class="inline-note">Scan the QR code and then click “I have paid”.</div>
           </div>
         </label>
-        <label class="pay-option">
-          <input type="radio" name="payment-method" value="card">
+
+        <label class="payment-method">
+          <input type="radio" name="payMethod" value="card">
           <div>
             <strong>Card</strong>
-            <span>Visa, Mastercard, Rupay</span>
+            <div class="inline-note">Enter card number, expiry, and CVV to continue.</div>
           </div>
         </label>
-        <label class="pay-option">
-          <input type="radio" name="payment-method" value="netbanking">
+
+        <label class="payment-method">
+          <input type="radio" name="payMethod" value="netbanking">
           <div>
-            <strong>Net banking</strong>
-            <span>All major banks</span>
+            <strong>Net Banking</strong>
+            <div class="inline-note">Choose bank and enter login credentials.</div>
           </div>
         </label>
+      </div>
+
+      <div id="upi-section" class="payment-fields">
+        <div class="qr-box">
+          <div class="summary-label">Scan to pay</div>
+          <div id="qrcode"></div>
+          <div class="inline-note">UPI ID: fairplayrail@upi</div>
+          <button id="upi-paid-btn" type="button" class="btn btn-primary">I have paid</button>
+        </div>
+      </div>
+
+      <div id="card-section" class="payment-fields hidden">
+        <div class="field-grid">
+          <div class="form-group">
+            <label>Card Number</label>
+            <input type="text" id="card-number" class="form-input" placeholder="1234 5678 9012 3456">
+          </div>
+          <div class="form-group">
+            <label>Name on Card</label>
+            <input type="text" id="card-name" class="form-input" placeholder="Cardholder name">
+          </div>
+          <div class="form-group">
+            <label>Expiry</label>
+            <input type="text" id="card-expiry" class="form-input" placeholder="MM/YY">
+          </div>
+          <div class="form-group">
+            <label>CVV</label>
+            <input type="password" id="card-cvv" class="form-input" placeholder="123">
+          </div>
+        </div>
+        <button id="card-pay-btn" type="button" class="btn btn-primary">Pay Now</button>
+      </div>
+
+      <div id="bank-section" class="payment-fields hidden">
+        <div class="field-grid">
+          <div class="form-group">
+            <label>Select Bank</label>
+            <select id="bank-name" class="form-select">
+              <option value="">Choose bank</option>
+              <option>SBI</option>
+              <option>HDFC</option>
+              <option>ICICI</option>
+              <option>PNB</option>
+              <option>Axis Bank</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>User ID</label>
+            <input type="text" id="bank-user" class="form-input" placeholder="Internet banking ID">
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="bank-pass" class="form-input" placeholder="Password">
+          </div>
+          <div class="form-group">
+            <label>OTP</label>
+            <input type="text" id="bank-otp" class="form-input" placeholder="6-digit OTP">
+          </div>
+        </div>
+        <button id="bank-pay-btn" type="button" class="btn btn-primary">Pay Now</button>
       </div>
     </section>
 
     <div class="form-actions">
       <a href="passengers.html" class="btn btn-ghost">Back</a>
-      <button id="pay-btn" type="button" class="btn btn-primary">Pay ₹<span id="total-fare">0</span></button>
     </div>
   </main>
 
@@ -98,7 +207,7 @@
           <div class="summary-sub">${booking.from} → ${booking.to}</div>
         </div>
         <div>
-          <div class="summary-label">Pnr</div>
+          <div class="summary-label">PNR</div>
           <div class="summary-value mono">${booking.pnr}</div>
         </div>
         <div>
@@ -111,11 +220,82 @@
       </div>
     `;
 
-    document.getElementById('total-fare').textContent = booking.fare.total;
-    document.getElementById('pay-btn').addEventListener('click', function() {
-      alert('Payment successful! Your ticket is confirmed.');
-      window.location.href = 'confirmation.html';
+    document.getElementById('qrcode').innerHTML = '';
+    new QRCode(document.getElementById('qrcode'), {
+      text: `upi://pay?pa=fairplayrail@upi&pn=Fairplay Rail&am=${booking.fare.total}&cu=INR`,
+      width: 220,
+      height: 220,
+      colorDark: "#000000",
+      colorLight: "#ffffff",
+      correctLevel: QRCode.CorrectLevel.H
     });
+
+    const upiSection = document.getElementById('upi-section');
+    const cardSection = document.getElementById('card-section');
+    const bankSection = document.getElementById('bank-section');
+
+    function showSection(method) {
+      upiSection.classList.toggle('hidden', method !== 'upi');
+      cardSection.classList.toggle('hidden', method !== 'card');
+      bankSection.classList.toggle('hidden', method !== 'netbanking');
+    }
+
+    document.querySelectorAll('input[name="payMethod"]').forEach(radio => {
+      radio.addEventListener('change', function() {
+        showSection(this.value);
+      });
+    });
+
+    function confirmBooking() {
+      fetch('/api/booking', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(booking)
+      })
+      .then(() => {
+        window.location.href = 'confirmation.html';
+      })
+      .catch(() => {
+        alert('Could not save booking.');
+      });
+    }
+
+    document.getElementById('upi-paid-btn').addEventListener('click', function() {
+      alert('Payment received via UPI.');
+      confirmBooking();
+    });
+
+    document.getElementById('card-pay-btn').addEventListener('click', function() {
+      const number = document.getElementById('card-number').value.trim();
+      const name = document.getElementById('card-name').value.trim();
+      const expiry = document.getElementById('card-expiry').value.trim();
+      const cvv = document.getElementById('card-cvv').value.trim();
+
+      if (!number || !name || !expiry || !cvv) {
+        alert('Please fill all card details.');
+        return;
+      }
+
+      alert('Card payment successful.');
+      confirmBooking();
+    });
+
+    document.getElementById('bank-pay-btn').addEventListener('click', function() {
+      const bank = document.getElementById('bank-name').value;
+      const user = document.getElementById('bank-user').value.trim();
+      const pass = document.getElementById('bank-pass').value.trim();
+      const otp = document.getElementById('bank-otp').value.trim();
+
+      if (!bank || !user || !pass || !otp) {
+        alert('Please fill all net banking details.');
+        return;
+      }
+
+      alert('Net banking payment successful.');
+      confirmBooking();
+    });
+
+    showSection('upi');
   </script>
 </body>
 </html>
