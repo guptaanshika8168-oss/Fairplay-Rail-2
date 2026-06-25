@@ -1,57 +1,30 @@
 let botSessionId = null;
-let currentScore = 0;
-let currentStatus = 'human';
 
 async function initBotSession() {
   try {
     const res = await fetch('/api/session');
     const data = await res.json();
     botSessionId = data.sessionId;
-    currentScore = data.score;
-    currentStatus = data.status;
-    updateStatusDisplay();
-  } catch (err) {
-    console.error('Failed:', err);
+  } catch (e) {}
+  updateStatusDisplay('human', 'Move naturally to stay human', 0);
+}
+
+function updateStatusDisplay(status = 'human', text = 'Move naturally to stay human', score = 0) {
+  const el = document.getElementById('bot-status');
+  const live = document.getElementById('live-status-text');
+  const scoreEl = document.getElementById('mouse-score');
+  const label = document.getElementById('monitor-label');
+  const bar = document.getElementById('movement-bar');
+
+  if (el) {
+    el.className = 'status-chip ' + (status === 'human' ? 'status-human' : status === 'suspicious' ? 'status-suspicious' : 'status-bot');
+    el.textContent = status === 'human' ? 'Human' : status === 'suspicious' ? 'Suspicious' : 'Bot';
   }
-}
 
-async function sendSignal(type, data = {}) {
-  try {
-    const res = await fetch('/api/signal', {
-      method: 'POST',
-    headers: { 
-  'Content-Type': 'application/json',
-  'X-Session-ID': botSessionId // Passes the session ID to your server
-},
-body: JSON.stringify({ type, data })
-    
-    });
-    const result = await res.json();
-    if (result.ok) {
-      currentScore = result.score;
-      currentStatus = result.status;
-      updateStatusDisplay();
-    }
-  } catch (err) {
-    console.error('Failed:', err);
-  }
-}
-
-function updateStatusDisplay() {
-  const statusEl = document.getElementById('bot-status');
-  if (!statusEl) return;
-  statusEl.className = 'badge badge-' + currentStatus;
-  statusEl.textContent = currentStatus === 'human' ? '✓ Human' : currentStatus === 'challenged' ? '⚠ Challenged' : '✕ Blocked';
-}
-
-function showChallenge() {
-  const challengeEl = document.getElementById('captcha-challenge');
-  if (!challengeEl) return;
-  challengeEl.style.display = 'block';
-}
-
-function verifyCaptcha(passed) {
-  document.getElementById('captcha-challenge').style.display = 'none';
+  if (live) live.textContent = text;
+  if (scoreEl) scoreEl.textContent = score;
+  if (label) label.textContent = text;
+  if (bar) bar.style.width = Math.min(100, Math.max(10, score)) + '%';
 }
 
 document.addEventListener('DOMContentLoaded', () => {

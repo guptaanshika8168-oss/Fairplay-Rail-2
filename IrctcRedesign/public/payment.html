@@ -2,138 +2,116 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Payment — IRCTC Tatkal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment — Fairplay Rail</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <nav class="navbar">
+  <div class="bg-orb orb-1"></div>
+  <div class="bg-orb orb-2"></div>
+  <div class="bg-grid"></div>
+
+  <nav class="navbar glass">
     <div class="navbar-inner container">
-      <div class="navbar-logo"><span>🚂</span> IRCTC Tatkal</div>
+      <div class="brand">
+        <div class="brand-mark">FR</div>
+        <div>
+          <div class="brand-title">Fairplay Rail</div>
+          <div class="brand-sub">Premium Tatkal booking</div>
+        </div>
+      </div>
       <div class="navbar-links">
         <a href="index.html">Home</a>
         <a href="trains.html">Book Train</a>
         <a href="admin.html">Admin</a>
       </div>
-      <div class="navbar-actions"><span id="bot-status" class="badge badge-human">✓ Human</span></div>
+      <div class="navbar-actions">
+        <span id="bot-status" class="status-chip status-human">Human</span>
+      </div>
     </div>
   </nav>
 
-  <main class="container mt-24">
-    <div class="stepper">
-      <div class="step done"><div class="step-circle">1</div><div class="step-label">Home</div></div>
-      <div class="step-line"></div>
-      <div class="step done"><div class="step-circle">2</div><div class="step-label">Train</div></div>
-      <div class="step-line"></div>
-      <div class="step done"><div class="step-circle">3</div><div class="step-label">Passengers</div></div>
-      <div class="step-line"></div>
-      <div class="step active"><div class="step-circle">4</div><div class="step-label">Payment</div></div>
-      <div class="step-line"></div>
-      <div class="step"><div class="step-circle">5</div><div class="step-label">Confirm</div></div>
-    </div>
-
-    <h1 class="section-title mb-8">💳 Payment Details</h1>
-    <p class="section-sub">Complete your payment to confirm booking</p>
-
-    <div id="booking-summary" class="card mb-16">
-      <div class="card-body">
-        <p class="text-muted">Loading booking details...</p>
+  <main class="container page-shell">
+    <div class="page-header glass">
+      <div>
+        <div class="eyebrow">Step 4</div>
+        <h1>Payment</h1>
+        <p>A clean checkout screen with visible fare summary and a simple confirmation flow.</p>
+      </div>
+      <div class="page-mini-card">
+        <span>Security</span>
+        <strong>Demo checkout</strong>
       </div>
     </div>
 
-    <div class="card mb-16">
-      <div class="card-body">
-        <h3 class="font-bold mb-16">Select Payment Method</h3>
-        <label class="flex items-center gap-8" style="padding: 16px; border: 1px solid var(--border); border-radius: 8px; cursor: pointer; margin-bottom: 12px;">
+    <section id="booking-summary" class="payment-summary glass"></section>
+
+    <section class="payment-card glass">
+      <div class="section-title-row">
+        <h2>Select payment method</h2>
+        <span class="section-tag">Demo only</span>
+      </div>
+      <div class="pay-methods">
+        <label class="pay-option">
           <input type="radio" name="payment-method" value="upi" checked>
-          <div style="flex: 1;">
-            <p class="font-semibold">UPI</p>
-            <p class="text-sm text-muted">Google Pay, PhonePe, Paytm</p>
+          <div>
+            <strong>UPI</strong>
+            <span>Google Pay, PhonePe, Paytm</span>
           </div>
         </label>
-        
-        <label class="flex items-center gap-8" style="padding: 16px; border: 1px solid var(--border); border-radius: 8px; cursor: pointer; margin-bottom: 12px;">
+        <label class="pay-option">
           <input type="radio" name="payment-method" value="card">
-          <div style="flex: 1;">
-            <p class="font-semibold">Credit/Debit Card</p>
-            <p class="text-sm text-muted">Visa, Mastercard, Rupay</p>
+          <div>
+            <strong>Card</strong>
+            <span>Visa, Mastercard, Rupay</span>
           </div>
         </label>
-        
-        <label class="flex items-center gap-8" style="padding: 16px; border: 1px solid var(--border); border-radius: 8px; cursor: pointer;">
+        <label class="pay-option">
           <input type="radio" name="payment-method" value="netbanking">
-          <div style="flex: 1;">
-            <p class="font-semibold">Net Banking</p>
-            <p class="text-sm text-muted">All major banks</p>
+          <div>
+            <strong>Net banking</strong>
+            <span>All major banks</span>
           </div>
         </label>
       </div>
-    </div>
+    </section>
 
-    <div class="flex gap-12 justify-between">
-      <a href="passengers.html" class="btn btn-ghost">← Back</a>
-      <button id="pay-btn" class="btn btn-orange">Pay ₹<span id="total-fare">0</span> →</button>
+    <div class="form-actions">
+      <a href="passengers.html" class="btn btn-ghost">Back</a>
+      <button id="pay-btn" type="button" class="btn btn-primary">Pay ₹<span id="total-fare">0</span></button>
     </div>
   </main>
 
   <script src="js/main.js"></script>
   <script src="js/bot-detector.js"></script>
   <script>
-    // Initialize bot session
-    if (typeof initBotSession !== 'undefined') {
-      initBotSession();
-    }
+    if (typeof initBotSession !== 'undefined') initBotSession();
 
-    // Send page signal
-    if (typeof sendSignal !== 'undefined') {
-      sendSignal('page', { page: '/payment.html' });
-    }
-
-    // Load booking data from sessionStorage
     const booking = JSON.parse(sessionStorage.getItem('booking') || '{}');
+    if (!booking.trainId) window.location.href = 'trains.html';
 
-    if (!booking.trainId) {
-      alert('No booking found! Please go back and book again.');
-      window.location.href = 'trains.html';
-    }
-
-    // Display booking summary
     document.getElementById('booking-summary').innerHTML = `
-      <div class="flex gap-16 flex-col">
-        <div class="flex justify-between items-center mb-8" style="background: var(--blue-light); padding: 20px; border-radius: var(--radius-sm);">
-          <div>
-            <h2 class="font-bold font-lg">${booking.trainName}</h2>
-            <p class="text-sm text-muted">${booking.from} → ${booking.to}</p>
-            <p class="text-sm text-muted">${booking.date}</p>
-          </div>
-          <div class="text-right">
-            <p class="text-sm text-muted">PNR</p>
-            <p class="font-mono font-bold">${booking.pnr || 'Pending'}</p>
-          </div>
+      <div class="payment-grid">
+        <div>
+          <div class="summary-label">Trip</div>
+          <div class="summary-value">${booking.trainName}</div>
+          <div class="summary-sub">${booking.from} → ${booking.to}</div>
         </div>
-
-        <div class="mb-8">
-          <h4 class="font-semibold mb-8">Passengers</h4>
-          ${booking.passengers.map(p => `
-            <div class="flex gap-8 mb-4" style="padding: 12px; background: var(--bg); border-radius: var(--radius-xs);">
-              <span class="font-semibold">${p.name}</span>
-              <span class="text-muted">${p.age}y, ${p.gender}</span>
-              <span class="text-muted">${p.coach} - ${p.berth}</span>
-              <span class="chip chip-avl">${p.status}</span>
-            </div>
-          `).join('')}
+        <div>
+          <div class="summary-label">Pnr</div>
+          <div class="summary-value mono">${booking.pnr}</div>
         </div>
-
-        <div class="flex justify-between font-bold font-lg" style="border-top: 2px solid var(--border); padding-top: 12px;">
-          <span>Total</span>
-          <span>₹${booking.fare.total}</span>
+        <div>
+          <div class="summary-label">Total</div>
+          <div class="summary-value">₹${booking.fare.total}</div>
         </div>
+      </div>
+      <div class="payment-passenger">
+        ${booking.passengers.map(p => `<span>${p.name} • ${p.age} • ${p.gender} • ${p.berth}</span>`).join('')}
       </div>
     `;
 
-    // Set total fare
     document.getElementById('total-fare').textContent = booking.fare.total;
-
-    // Handle payment click
     document.getElementById('pay-btn').addEventListener('click', function() {
       alert('Payment successful! Your ticket is confirmed.');
       window.location.href = 'confirmation.html';

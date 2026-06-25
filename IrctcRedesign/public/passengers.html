@@ -3,170 +3,174 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Passenger Details — IRCTC Tatkal</title>
+  <title>Passengers — Fairplay Rail</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <nav class="navbar">
+  <div class="bg-orb orb-1"></div>
+  <div class="bg-orb orb-2"></div>
+  <div class="bg-grid"></div>
+
+  <nav class="navbar glass">
     <div class="navbar-inner container">
-      <div class="navbar-logo"><span>🚂</span> IRCTC Tatkal</div>
+      <div class="brand">
+        <div class="brand-mark">FR</div>
+        <div>
+          <div class="brand-title">Fairplay Rail</div>
+          <div class="brand-sub">Premium Tatkal booking</div>
+        </div>
+      </div>
       <div class="navbar-links">
         <a href="index.html">Home</a>
         <a href="trains.html">Book Train</a>
         <a href="admin.html">Admin</a>
       </div>
       <div class="navbar-actions">
-        <span id="bot-status" class="badge badge-human">✓ Human</span>
+        <span id="bot-status" class="status-chip status-human">Human</span>
       </div>
     </div>
   </nav>
 
-  <main class="container mt-24">
-    <div class="stepper">
-      <div class="step done"><div class="step-circle">1</div><div class="step-label">Home</div></div>
-      <div class="step-line"></div>
-      <div class="step done"><div class="step-circle">2</div><div class="step-label">Train</div></div>
-      <div class="step-line"></div>
-      <div class="step active"><div class="step-circle">3</div><div class="step-label">Passengers</div></div>
-      <div class="step-line"></div>
-      <div class="step"><div class="step-circle">4</div><div class="step-label">Payment</div></div>
-      <div class="step-line"></div>
-      <div class="step"><div class="step-circle">5</div><div class="step-label">Confirm</div></div>
-    </div>
-
-    <h1 class="section-title mb-8">👥 Passenger Details</h1>
-    <p class="section-sub">Enter passenger information</p>
-
-    <div id="train-info" class="card mb-16"></div>
-
-    <div class="card mb-16">
-      <div class="card-body">
-        <h3 class="font-bold mb-16">Passenger 1</h3>
-        <div class="flex gap-8 flex-col">
-          <div class="form-group">
-            <label class="form-label">Name *</label>
-            <input type="text" id="p1-name" class="form-input" required placeholder="Full name">
-          </div>
-          <div class="flex gap-8">
-            <div class="form-group" style="flex: 1;">
-              <label class="form-label">Age *</label>
-              <input type="number" id="p1-age" class="form-input" required placeholder="Age" min="1" max="120">
-            </div>
-            <div class="form-group" style="flex: 1;">
-              <label class="form-label">Gender *</label>
-              <select id="p1-gender" class="form-select" required>
-                <option value="">Select</option>
-                <option value="M">Male</option>
-                <option value="F">Female</option>
-                <option value="O">Other</option>
-              </select>
-            </div>
-          </div>
-        </div>
+  <main class="container page-shell">
+    <div class="page-header glass">
+      <div>
+        <div class="eyebrow">Step 3</div>
+        <h1>Passenger details</h1>
+        <p>Enter one or more passengers and move to payment with a smoother, more attractive form.</p>
+      </div>
+      <div class="page-mini-card">
+        <span>Session</span>
+        <strong>Saved in browser</strong>
       </div>
     </div>
 
-    <div class="card mb-16">
-      <div class="card-body">
-        <h3 class="font-bold mb-16">📞 Contact Details</h3>
-        <div class="flex gap-8 flex-col">
+    <section id="train-info" class="summary-card glass"></section>
+
+    <form id="booking-form" class="form-stack">
+      <section class="form-card glass">
+        <div class="section-title-row">
+          <h2>Passenger 1</h2>
+          <span class="section-tag">Required</span>
+        </div>
+        <div class="grid-2">
           <div class="form-group">
-            <label class="form-label">Mobile Number *</label>
-            <input type="tel" id="mobile" class="form-input" required placeholder="9876543210">
+            <label>Name</label>
+            <input type="text" id="p1-name" class="form-input" placeholder="Full name" required>
           </div>
           <div class="form-group">
-            <label class="form-label">Email</label>
-            <input type="email" id="email" class="form-input" placeholder="example@email.com">
+            <label>Age</label>
+            <input type="number" id="p1-age" class="form-input" min="1" max="120" placeholder="Age" required>
+          </div>
+          <div class="form-group">
+            <label>Gender</label>
+            <select id="p1-gender" class="form-select" required>
+              <option value="">Select</option>
+              <option value="M">Male</option>
+              <option value="F">Female</option>
+              <option value="O">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Berth</label>
+            <select id="p1-berth" class="form-select">
+              <option>No preference</option>
+              <option>Lower</option>
+              <option>Middle</option>
+              <option>Upper</option>
+            </select>
           </div>
         </div>
-      </div>
-    </div>
+      </section>
 
-    <div class="flex gap-12 justify-between">
-      <a href="trains.html" class="btn btn-ghost">← Back</a>
-      <button id="continue-btn" class="btn btn-orange">Continue to Payment →</button>
-    </div>
+      <section class="form-card glass">
+        <div class="section-title-row">
+          <h2>Contact details</h2>
+          <span class="section-tag">For updates</span>
+        </div>
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Mobile</label>
+            <input type="tel" id="mobile" class="form-input" placeholder="10-digit mobile" required>
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="email" class="form-input" placeholder="you@example.com">
+          </div>
+        </div>
+      </section>
+
+      <div class="form-actions">
+        <a href="trains.html" class="btn btn-ghost">Back</a>
+        <button id="continue-btn" type="button" class="btn btn-primary">Continue to Payment</button>
+      </div>
+    </form>
   </main>
 
   <script src="js/main.js"></script>
   <script src="js/bot-detector.js"></script>
   <script>
-    // Initialize
-    if (typeof initBotSession !== 'undefined') {
-      initBotSession();
-    }
+    if (typeof initBotSession !== 'undefined') initBotSession();
 
-    // Get train
     const selectedTrain = JSON.parse(sessionStorage.getItem('selectedTrain') || '{}');
-    
-    if (!selectedTrain.id) {
-      alert('No train selected!');
-      window.location.href = 'trains.html';
-    } else {
-      // Safely load layout if train data exists
-      document.getElementById('train-info').innerHTML = `
-        <div class="card-body">
-          <div class="flex justify-between items-center">
-            <div>
-              <h3 class="font-bold">${selectedTrain.name}</h3>
-              <p class="text-sm text-muted">${selectedTrain.from} → ${selectedTrain.to}</p>
-              <p class="text-sm text-muted">Date: ${selectedTrain.date}</p>
-            </div>
-          </div>
+    if (!selectedTrain.id) window.location.href = 'trains.html';
+
+    document.getElementById('train-info').innerHTML = `
+      <div class="summary-grid">
+        <div>
+          <div class="summary-label">Selected train</div>
+          <div class="summary-value">${selectedTrain.name}</div>
+          <div class="summary-sub">${selectedTrain.from} → ${selectedTrain.to}</div>
         </div>
-      `;
+        <div>
+          <div class="summary-label">Departure</div>
+          <div class="summary-value">${selectedTrain.departs || '-'}</div>
+        </div>
+        <div>
+          <div class="summary-label">Arrival</div>
+          <div class="summary-value">${selectedTrain.arrives || '-'}</div>
+        </div>
+      </div>
+    `;
 
-      // Continue button click
-      document.getElementById('continue-btn').addEventListener('click', async function() {
-        // Validate inputs
-        const name = document.getElementById('p1-name').value;
-        const age = document.getElementById('p1-age').value;
-        const gender = document.getElementById('p1-gender').value;
-        const mobile = document.getElementById('mobile').value;
-        const email = document.getElementById('email').value;
+    document.getElementById('continue-btn').addEventListener('click', function() {
+      const name = document.getElementById('p1-name').value.trim();
+      const age = document.getElementById('p1-age').value.trim();
+      const gender = document.getElementById('p1-gender').value;
+      const berth = document.getElementById('p1-berth').value;
+      const mobile = document.getElementById('mobile').value.trim();
+      const email = document.getElementById('email').value.trim();
 
-        if (!name || !age || !gender || !mobile) {
-          alert('Please fill all required fields');
-          return;
-        }
+      if (!name || !age || !gender || !mobile) {
+        alert('Please fill all required fields.');
+        return;
+      }
 
-        // Create booking data object
-        const bookingData = {
-          trainId: selectedTrain.id,
-          trainName: selectedTrain.name,
-          from: selectedTrain.from,
-          to: selectedTrain.to,
-          date: selectedTrain.date,
-          travelClass: 'SL',
-          passengers: [{
-            name: name,
-            age: age,
-            gender: gender,
-            berthPref: 'No pref',
-            coach: 'B1',
-            berth: 1,
-            berthType: 'LB',
-            status: 'CNF'
-          }],
-          contactMobile: mobile,
-          contactEmail: email,
-          insurance: false,
-          fare: {
-            base: 735,
-            reservation: 40,
-            gst: 39,
-            total: 814
-          }
-        };
+      const booking = {
+        trainId: selectedTrain.id,
+        trainName: selectedTrain.name,
+        from: selectedTrain.from,
+        to: selectedTrain.to,
+        departs: selectedTrain.departs,
+        arrives: selectedTrain.arrives,
+        date: selectedTrain.date,
+        travelClass: selectedTrain.travelClass || 'SL',
+        passengers: [{
+          name,
+          age,
+          gender,
+          coach: 'B1',
+          berth: berth,
+          status: 'CNF'
+        }],
+        contactMobile: mobile,
+        contactEmail: email,
+        pnr: String(Math.floor(1000000000 + Math.random() * 9000000000)),
+        fare: { base: 945, reservation: 40, gst: 50, total: 1035 }
+      };
 
-        // Save to sessionStorage (for payment page)
-        sessionStorage.setItem('booking', JSON.stringify(bookingData));
-
-        // Redirect to payment
-        console.log('Redirecting to payment...');
-        window.location.href = 'payment.html';
-      });
-    }
+      sessionStorage.setItem('booking', JSON.stringify(booking));
+      window.location.href = 'payment.html';
+    });
   </script>
 </body>
 </html>

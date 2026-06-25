@@ -3,14 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ticket Confirmation — IRCTC Tatkal</title>
+  <title>Ticket Confirmation — Fairplay Rail</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <nav class="navbar">
+  <div class="bg-orb orb-1"></div>
+  <div class="bg-orb orb-2"></div>
+  <div class="bg-grid"></div>
+
+  <nav class="navbar glass">
     <div class="navbar-inner container">
-      <div class="navbar-logo">
-        <span>🚂</span> IRCTC Tatkal
+      <div class="brand">
+        <div class="brand-mark">FR</div>
+        <div>
+          <div class="brand-title">Fairplay Rail</div>
+          <div class="brand-sub">Premium Tatkal booking</div>
+        </div>
       </div>
       <div class="navbar-links">
         <a href="index.html">Home</a>
@@ -18,82 +26,73 @@
         <a href="admin.html">Admin</a>
       </div>
       <div class="navbar-actions">
-        <span id="bot-status" class="badge badge-human">✓ Human</span>
+        <span id="bot-status" class="status-chip status-human">Human</span>
       </div>
     </div>
   </nav>
 
-  <main class="container confirmation-page">
-    <div class="confirm-top">
-      <div class="confirm-title-wrap">
-        <p class="confirm-success">✓ Booking confirmed!</p>
-        <h1 class="confirm-title">Your e-Ticket is ready</h1>
-        <p class="confirm-subtitle">Please save or print this reservation slip for your journey.</p>
+  <main class="container page-shell confirmation-shell">
+    <div class="confirm-banner glass">
+      <div>
+        <div class="eyebrow success">Booking confirmed</div>
+        <h1>Your e-ticket is ready</h1>
+        <p>Save this page or print the slip for your journey.</p>
       </div>
-
       <div class="confirm-actions">
-        <button class="btn btn-ghost" onclick="window.print()">Print Reservation Slip</button>
+        <button class="btn btn-ghost" onclick="window.print()">Print</button>
         <button class="btn btn-primary" onclick="downloadTicket()">Download PDF</button>
       </div>
     </div>
 
-    <section class="ticket-card" id="ticket-card">
-      <div class="ticket-header">
-        <div class="ticket-railway">
-          <span class="ticket-icon">🚆</span>
-          <span>Indian Railways</span>
-        </div>
-        <div class="ticket-meta">
-          <span id="ticket-class">e-Ticket | Class: SL</span>
-        </div>
+    <section class="ticket-shell glass" id="ticket-card">
+      <div class="ticket-head">
+        <div class="ticket-brand">🚆 Indian Railways</div>
+        <div class="ticket-class" id="ticket-class">e-Ticket | Class: SL</div>
       </div>
 
-      <div class="ticket-body">
-        <div class="journey-row">
-          <div class="station-block left">
-            <p class="station-code" id="from-code">NDLS</p>
-            <p class="station-name" id="from-name">New Delhi</p>
-            <p class="station-time" id="from-time">16:55</p>
+      <div class="ticket-main">
+        <div class="journey-head">
+          <div>
+            <div class="station-code" id="from-code">NDLS</div>
+            <div class="station-name" id="from-name">New Delhi</div>
+            <div class="station-time" id="from-time">16:55</div>
           </div>
 
           <div class="journey-mid">
-            <p class="journey-duration" id="journey-duration">17h 40m</p>
-            <div class="journey-line"></div>
-            <p class="train-number" id="train-number">12951 Rajdhani</p>
+            <div class="journey-duration" id="journey-duration">17h 40m</div>
+            <div class="route-line"></div>
+            <div class="train-number" id="train-number">12951 Rajdhani</div>
           </div>
 
-          <div class="station-block right">
-            <p class="station-code" id="to-code">CSMT</p>
-            <p class="station-name" id="to-name">Mumbai CSMT</p>
-            <p class="station-time" id="to-time">10:35 +1</p>
+          <div class="station-right">
+            <div class="station-code" id="to-code">CSMT</div>
+            <div class="station-name" id="to-name">Mumbai CSMT</div>
+            <div class="station-time" id="to-time">10:35 +1</div>
           </div>
         </div>
 
         <div class="divider-line"></div>
 
-        <div class="passenger-section">
-          <div class="section-heading">Passenger Details</div>
-          <div class="passenger-table">
-            <div class="passenger-head">
-              <span>Name</span>
-              <span>Age</span>
-              <span>Coach</span>
-              <span>Berth</span>
-              <span>Status</span>
-            </div>
-            <div id="passenger-list"></div>
+        <div class="section-title-row">
+          <h2>Passenger details</h2>
+          <span class="section-tag">Confirmed</span>
+        </div>
+
+        <div class="passenger-table">
+          <div class="passenger-head">
+            <span>Name</span><span>Age</span><span>Coach</span><span>Berth</span><span>Status</span>
           </div>
+          <div id="passenger-list"></div>
         </div>
 
         <div class="ticket-footer">
           <div class="pnr-box">
-            <p class="pnr-label">PNR Number</p>
-            <p class="pnr-value" id="pnr-number">4821039467</p>
+            <div class="summary-label">PNR Number</div>
+            <div class="pnr-value" id="pnr-number">----------</div>
           </div>
-
           <div class="fare-box">
-            <p class="fare-label">Total Fare</p>
-            <p class="fare-value" id="fare-total">₹0</p>
+            <div class="summary-label">Total fare</div>
+            <div class="fare-value" id="fare-total">₹0</div>
           </div>
         </div>
       </div>
@@ -102,53 +101,33 @@
 
   <script src="js/main.js"></script>
   <script>
-    async function loadBooking() {
-      try {
-        const res = await fetch('/api/booking');
-        const booking = await res.json();
+    const booking = JSON.parse(sessionStorage.getItem('booking') || '{}');
+    if (!booking.trainId) window.location.href = 'trains.html';
 
-        if (!booking || booking.error) {
-          window.location.href = 'trains.html';
-          return;
-        }
-
-        document.getElementById('ticket-class').textContent = `e-Ticket | Class: ${booking.travelClass || 'SL'}`;
-        document.getElementById('from-code').textContent = booking.from || 'NDLS';
-        document.getElementById('from-name').textContent = booking.fromName || 'New Delhi';
-        document.getElementById('from-time').textContent = booking.departs || '16:55';
-
-        document.getElementById('to-code').textContent = booking.to || 'CSMT';
-        document.getElementById('to-name').textContent = booking.toName || 'Mumbai CSMT';
-        document.getElementById('to-time').textContent = booking.arrives || '10:35 +1';
-
-        document.getElementById('journey-duration').textContent = booking.duration || '17h 40m';
-        document.getElementById('train-number').textContent = `${booking.trainId || '12951'} ${booking.trainName || 'Rajdhani'}`;
-
-        document.getElementById('pnr-number').textContent = booking.pnr || '4821039467';
-        document.getElementById('fare-total').textContent = `₹${booking.fare?.total || 0}`;
-
-        const passengers = booking.passengers || [];
-        const list = document.getElementById('passenger-list');
-
-        list.innerHTML = passengers.map(p => `
-          <div class="passenger-row">
-            <span>${p.name}</span>
-            <span>${p.age}</span>
-            <span>${p.coach}</span>
-            <span>${p.berth}</span>
-            <span><span class="status-pill">${p.status || 'CNF'}</span></span>
-          </div>
-        `).join('');
-      } catch (err) {
-        console.error(err);
-      }
-    }
+    document.getElementById('ticket-class').textContent = `e-Ticket | Class: ${booking.travelClass || 'SL'}`;
+    document.getElementById('from-code').textContent = booking.from || 'NDLS';
+    document.getElementById('from-name').textContent = booking.from === 'NDLS' ? 'New Delhi' : booking.from;
+    document.getElementById('from-time').textContent = booking.departs || '16:55';
+    document.getElementById('to-code').textContent = booking.to || 'CSMT';
+    document.getElementById('to-name').textContent = booking.to === 'CSMT' ? 'Mumbai CSMT' : booking.to;
+    document.getElementById('to-time').textContent = booking.arrives || '10:35 +1';
+    document.getElementById('journey-duration').textContent = `${booking.duration || '17h 40m'}`;
+    document.getElementById('train-number').textContent = `${booking.trainId || ''} ${booking.trainName || ''}`.trim();
+    document.getElementById('pnr-number').textContent = booking.pnr || '4821039467';
+    document.getElementById('fare-total').textContent = `₹${booking.fare?.total || 0}`;
+    document.getElementById('passenger-list').innerHTML = (booking.passengers || []).map(p => `
+      <div class="passenger-row">
+        <span>${p.name}</span>
+        <span>${p.age}</span>
+        <span>${p.coach}</span>
+        <span>${p.berth}</span>
+        <span><span class="status-pill">${p.status || 'CNF'}</span></span>
+      </div>
+    `).join('');
 
     function downloadTicket() {
       window.print();
     }
-
-    loadBooking();
   </script>
 </body>
 </html>
