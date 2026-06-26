@@ -113,7 +113,7 @@
         document.getElementById('to-code').textContent = booking.to || 'CSMT';
         document.getElementById('to-name').textContent = booking.to === 'CSMT' ? 'Mumbai CSMT' : booking.to;
         document.getElementById('to-time').textContent = booking.arrives || '10:35 +1';
-        document.getElementById('journey-duration').textContent = `${booking.duration || '17h 40m'}`;
+        document.getElementById('journey-duration').textContent = booking.duration || '17h 40m';
         document.getElementById('train-number').textContent = `${booking.trainId || ''} ${booking.trainName || ''}`.trim();
         document.getElementById('pnr-number').textContent = booking.pnr || '4821039467';
         document.getElementById('fare-total').textContent = `₹${booking.fare?.total || 0}`;

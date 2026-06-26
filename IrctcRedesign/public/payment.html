@@ -192,10 +192,7 @@
   </main>
 
   <script src="js/main.js"></script>
-  <script src="js/bot-detector.js"></script>
   <script>
-    if (typeof initBotSession !== 'undefined') initBotSession();
-
     const booking = JSON.parse(sessionStorage.getItem('booking') || '{}');
     if (!booking.trainId) window.location.href = 'trains.html';
 
