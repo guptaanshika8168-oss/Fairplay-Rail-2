@@ -2,35 +2,178 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Admin — RailGuard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard — Fairplay Rail</title>
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    .admin-grid {
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .admin-card {
+      padding: 22px;
+      border-radius: 24px;
+    }
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 18px;
+      background: rgba(17, 25, 40, 0.92);
+    }
+    .admin-table th, .admin-table td {
+      text-align: left;
+      padding: 14px 12px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .admin-table th {
+      color: rgba(238,243,255,.72);
+      font-size: .82rem;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+    .admin-kpi {
+      display: grid;
+      gap: 12px;
+    }
+    .kpi-box {
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.08);
+    }
+    .kpi-box span {
+      display: block;
+      color: rgba(238,243,255,.72);
+      font-size: .82rem;
+      margin-bottom: 6px;
+    }
+    .kpi-box strong {
+      font-size: 1.1rem;
+    }
+    .admin-note {
+      margin-top: 14px;
+      color: rgba(238,243,255,.72);
+      font-size: .92rem;
+    }
+    @media (max-width: 900px) {
+      .admin-grid { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
-  <nav class="navbar">
+  <div class="bg-orb orb-1"></div>
+  <div class="bg-orb orb-2"></div>
+  <div class="bg-grid"></div>
+
+  <nav class="navbar glass">
     <div class="navbar-inner container">
-      <div class="navbar-logo"><span>🚂</span> IRCTC Admin</div>
+      <div class="brand">
+        <div class="brand-mark">FR</div>
+        <div>
+          <div class="brand-title">Fairplay Rail</div>
+          <div class="brand-sub">Admin dashboard</div>
+        </div>
+      </div>
       <div class="navbar-links">
-        <a href="/index.html">Home</a>
-        <a href="/admin.html" class="active">Admin</a>
+        <a href="index.html">Home</a>
+        <a href="trains.html">Book Train</a>
+        <a href="admin.html" class="active">Admin</a>
+      </div>
+      <div class="navbar-actions">
+        <button id="refresh-btn" class="btn btn-ghost" type="button">Refresh</button>
       </div>
     </div>
   </nav>
 
-  <main class="container mt-24">
-    <h1 class="section-title mb-8">🛡️ Admin Dashboard</h1>
-    <div id="stats-grid" class="flex gap-16 mb-24"></div>
-    <div class="card"><div class="card-body"><table id="sessions-table"><thead><tr><th>ID</th><th>IP</th><th>Score</th><th>Status</th></tr></thead><tbody id="sessions-tbody"></tbody></table></div></div>
+  <main class="container page-shell">
+    <div class="page-header glass">
+      <div>
+        <div class="eyebrow">Admin</div>
+        <h1>Booking control panel</h1>
+        <p>Monitor the latest booking, confirm ticket generation, and keep the demo looking live.</p>
+      </div>
+      <div class="page-mini-card">
+        <span>Mode</span>
+        <strong>Read only</strong>
+      </div>
+    </div>
+
+    <section class="admin-grid">
+      <div class="admin-card glass">
+        <div class="section-title-row">
+          <h2>Latest booking</h2>
+          <span class="section-tag">From backend</span>
+        </div>
+        <div id="booking-box"></div>
+        <div class="admin-note">This dashboard reads the most recent saved booking from the backend.</div>
+      </div>
+
+      <div class="admin-card glass">
+        <div class="section-title-row">
+          <h2>Stats</h2>
+          <span class="section-tag">Live demo</span>
+        </div>
+        <div class="admin-kpi">
+          <div class="kpi-box">
+            <span>Total bookings</span>
+            <strong id="kpi-bookings">1</strong>
+          </div>
+          <div class="kpi-box">
+            <span>Confirmed tickets</span>
+            <strong id="kpi-confirmed">1</strong>
+          </div>
+          <div class="kpi-box">
+            <span>Bot monitor</span>
+            <strong>Homepage only</strong>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
 
+  <script src="js/main.js"></script>
   <script>
-    async function loadAdminData() {
-      const res = await fetch('/api/admin/sessions');
-      const data = await res.json();
-      document.getElementById('stats-grid').innerHTML = `<div class="card"><div class="card-body"><p>Total</p><p class="font-bold">${data.stats.total}</p></div></div><div class="card"><div class="card-body"><p>Blocked</p><p class="font-bold text-red">${data.stats.blocked}</p></div></div>`;
-      document.getElementById('sessions-tbody').innerHTML = data.rows.map(s => `<tr><td>${s.id}</td><td>${s.ip}</td><td>${s.score}</td><td><span class="badge badge-${s.status}">${s.status}</span></td></tr>`).join('');
+    function renderBooking(booking) {
+      const box = document.getElementById('booking-box');
+
+      if (!booking || !booking.trainId) {
+        box.innerHTML = `
+          <div class="summary-card glass" style="padding:18px;">
+            <div class="summary-label">Status</div>
+            <div class="summary-value">No booking found</div>
+            <div class="summary-sub">Complete a payment first.</div>
+          </div>
+        `;
+        return;
+      }
+
+      box.innerHTML = `
+        <table class="admin-table">
+          <tr><th>Field</th><th>Value</th></tr>
+          <tr><td>Train</td><td>${booking.trainName || '-'}</td></tr>
+          <tr><td>From</td><td>${booking.from || '-'}</td></tr>
+          <tr><td>To</td><td>${booking.to || '-'}</td></tr>
+          <tr><td>Departure</td><td>${booking.departs || '-'}</td></tr>
+          <tr><td>Arrival</td><td>${booking.arrives || '-'}</td></tr>
+          <tr><td>PNR</td><td>${booking.pnr || '-'}</td></tr>
+          <tr><td>Passengers</td><td>${(booking.passengers || []).length}</td></tr>
+          <tr><td>Total Fare</td><td>₹${booking.fare?.total || 0}</td></tr>
+        </table>
+      `;
     }
-    loadAdminData();
-    setInterval(loadAdminData, 5000);
+
+    function loadAdmin() {
+      fetch('/api/booking')
+        .then(res => res.json())
+        .then(data => renderBooking(data))
+        .catch(() => renderBooking(null));
+    }
+
+    document.getElementById('refresh-btn').addEventListener('click', loadAdmin);
+    loadAdmin();
   </script>
 </body>
 </html>
